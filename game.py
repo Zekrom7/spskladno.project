@@ -7,14 +7,14 @@ import time
 
 pygame.init()
 
-# Window
+# okno
 info = pygame.display.Info()
 WIDTH, HEIGHT = info.current_w, info.current_h
 screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
 clock = pygame.time.Clock()
 font = pygame.font.SysFont(None, 32)
 
-# Colors
+# barvy
 SKY_BLUE = (135, 206, 250)
 DARK_WATER = (10, 20, 60)
 WHITE = (255, 255, 255)
@@ -24,7 +24,7 @@ BROWN = (80, 40, 20)
 GREY = (100, 100, 100)
 AIR_BUBBLE_COLOR = (135, 206, 235)
 
-# Terrain & Player
+# Teren a hrac
 cliff_y = HEIGHT // 2 - 300
 cliff = pygame.Rect(100, cliff_y, 300, 30)
 player = pygame.Rect(200, cliff_y - 50, 40, 40)
@@ -44,14 +44,14 @@ oxygen_depletion_rate = 0.05
 oxygen_recovery_rate = 0.5
 in_air_bubble = False
 
-# Air bubbles
+# bubliny
 air_bubbles = [
     {"x": WIDTH // 2, "y": 1500, "r": 60},
     {"x": WIDTH // 2 + 200, "y": 2200, "r": 80},
     {"x": WIDTH // 2 - 150, "y": 3000, "r": 70},
 ]
 
-# Obstacles (static)
+# prekazky (static)
 obstacles = []
 for i in range(1000, 5000, 600):
     width = random.randint(60, 140)
@@ -60,7 +60,7 @@ for i in range(1000, 5000, 600):
     x = 0 if side == "left" else WIDTH - width
     obstacles.append(pygame.Rect(x, i, width, height))
 
-# Octopus enemy with patrol
+# chobotnice
 octopus = {"rect": pygame.Rect(WIDTH//2 - 25, 1800, 50, 50),
            "dir": 1,
            "range": 150,
@@ -182,7 +182,7 @@ while running:
     # Water check
     in_water = player.y - start_depth > 0
 
-    # Air bubble check
+    # bubliny check
     in_air_bubble = any(check_in_bubble(player, b) for b in air_bubbles)
 
     if in_water and not in_air_bubble:
@@ -200,7 +200,7 @@ while running:
         pygame.quit()
         sys.exit()
 
-    # Cliff
+    # utes
     cliff_draw = pygame.Rect(cliff.x, cliff.y - camera_offset, cliff.width, cliff.height)
     pygame.draw.rect(screen, BROWN, cliff_draw)
     if player.colliderect(cliff) and velocity[1] >= 0:
@@ -208,7 +208,7 @@ while running:
         velocity = [0, 0]
         on_platform = True
 
-    # Obstacles
+    # prekazky
     for obs in obstacles:
         obs_draw = pygame.Rect(obs.x, obs.y - camera_offset, obs.width, obs.height)
         pygame.draw.rect(screen, GREY, obs_draw)
@@ -216,11 +216,11 @@ while running:
             player.bottom = obs.top
             velocity[1] = 0
 
-    # Air bubbles
+    # bubliny
     for bubble in air_bubbles:
         draw_air_bubble(bubble, camera_offset)
 
-    # Octopus patrol
+    # chobotnice
     if octopus["active"]:
         oct = octopus["rect"]
         oct.x += octopus["dir"] * octopus["speed"]
@@ -230,7 +230,7 @@ while running:
         if player.colliderect(oct) and not qte_active:
             start_qte()
 
-    # Player
+    # hrac
     draw_y = player.y - camera_offset
     pygame.draw.rect(screen, WHITE, (player.x, draw_y, player.width, player.height))
 
@@ -240,7 +240,7 @@ while running:
     oxygen_text = font.render(f"O2: {int(oxygen)}%", True, WHITE)
     screen.blit(oxygen_text, (130, 58))
 
-    # Depth
+    # hloubka
     depth = max(0, int(player.y - start_depth))
     depth_text = font.render(f"{depth} m", True, WHITE)
     screen.blit(depth_text, (WIDTH - 120, 20))
@@ -251,3 +251,4 @@ while running:
 
     pygame.display.flip()
     clock.tick(60)
+
